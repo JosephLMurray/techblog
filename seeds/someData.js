@@ -7,6 +7,6 @@ const data = [
 
 ];
 
-const seed = () => .bulkCreate(gallerydata);
+const seed = () => .bulkCreate(data);
 
 module.exports = seed;

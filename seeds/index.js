@@ -1,4 +1,5 @@
 const sequelize = require('../config/connection');
+
 const seedA = require('./aData');
 const seedB = require('./bData');
 
