@@ -1,13 +1,28 @@
 const router = require('express').Router();
+
 const { Post, Comment, User } = require('../models');
 
 router.get('/', async (req, res) => {
   // get all posts for the homepage
   try {
+    // Get all posts and JOIN with user data
     const postData = await Post.findAll({
-      include: Comment
+      include: [
+        {
+          model: User,
+          attributes: ['username']
+        }
+      ]
     });
-    res.status(200).json(postData);
+
+    // Serialize data so the template can read it
+    const posts = postData.map((post) => post.get({ plain: true }));
+
+    // Pass serialized data and session flag into template
+    res.render('dashboard', {
+      posts,
+      logged_in: req.session.logged_in
+    });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -17,15 +32,24 @@ router.get('/post/:id', async (req, res) => {
   // get a single post
   try {
     const postData = await Post.findByPk(req.params.id, {
-      include: Comment
+      include: [
+        {
+          model: User,
+          attributes: ['name']
+        },
+        {
+          model: Comment,
+          attributes: ['content']
+        }
+      ]
     });
 
-    if (!postData) {
-      res.status(404).json({ message: 'No post found with this id!' });
-      return;
-    }
+    const post = postData.get({ plain: true });
 
-    res.status(200).json(postData);
+    res.render('post', {
+      ...post,
+      logged_in: req.session.logged_in
+    });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -33,10 +57,22 @@ router.get('/post/:id', async (req, res) => {
 
 router.get('/login', (req, res) => {
   // login
+  if (req.session.logged_in) {
+    res.redirect('/dashboard');
+    return;
+  }
+
+  res.render('login');
 });
 
 router.get('/signup', (req, res) => {
   // signup
+  if (req.session.logged_in) {
+    res.redirect('/dashboard');
+    return;
+  }
+
+  res.render('signup');
 });
 
 module.exports = router;
