@@ -19,6 +19,21 @@ router.get('/new', withAuth, (req, res) => {
 
 router.get('/edit/:id', withAuth, async (res, req) => {
   // To be able to find posts by primary key and render the edit post on the dashboard
+  try {
+    const postData = await Post.findByPk({
+      where: {
+        id: req.params.id
+      }
+    });
+    const post = postData({ plain: true });
+
+    res.render('post', {
+      ...post,
+      logged_in: req.session.logged_in
+    });
+  } catch (err) {
+    res.render('login');
+  }
 });
 
 module.exports = router;
