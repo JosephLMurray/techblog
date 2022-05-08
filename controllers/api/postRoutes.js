@@ -1,4 +1,5 @@
 const router = require('express').Router();
+
 const { Post } = require('../../models');
 const withAuth = require('../../utils/auth');
 
@@ -13,24 +14,24 @@ router.post('/', withAuth, async (req, res) => {
 
 router.put('/:id', withAuth, async (req, res) => {
   // Update a post
-  Post.update(
-    {
-      // All the fields you can update and the data attached to the request body.
-      title: req.body.title,
-      content: req.body.content
-    },
-    {
-      // Gets the post based on the id given in the request parameters
-      where: {
-        id: req.params.id
+  try {
+    const updatedPost = await Post.update(
+      {
+        // All the fields you can update and the data attached to the request body.
+        title: req.body.title,
+        content: req.body.content
+      },
+      {
+        // Gets the post based on the id given in the request parameters
+        where: {
+          id: req.params.id
+        }
       }
-    }
-  )
-    .then((updatedPost) => {
-      // Sends the updated post as a json response
-      res.json(updatedPost);
-    })
-    .catch((err) => res.json(err));
+    );
+    res.status(200).json(updatedPost);
+  } catch (err) {
+    res.json(err);
+  }
 });
 
 router.delete('/:id', withAuth, async (req, res) => {
