@@ -1,10 +1,41 @@
-const { Sequelize, Model, DataTypes } = require("sequelize");
-const sequelize = require("../config/config");
+const { Sequelize, Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/config');
 
 class Comment extends Model {}
 
 Comment.init(
-    // finish this Comment Model
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    content: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'User',
+        key: 'id'
+      }
+    },
+    post_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Post',
+        key: 'id'
+      }
+    }
+  },
+  {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    modelName: 'comment'
+  }
 );
 
 module.exports = Comment;
