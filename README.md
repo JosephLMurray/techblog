@@ -1,1 +1,1 @@
-# techblog
+# rookies
