@@ -1,0 +1,18 @@
+{{#each posts as |post|}}
+  <div class='row'>
+    <a href='/post/:{{post.id}}'>
+      <div class='col-md-10 card'>
+        <div class='card-header'>
+          <h2>{{post.title}}</h2>
+        </div>
+        <div class='card-body'>
+          <h3>{{post.content}}</h3>
+          <h4 style='text-align: right'>Created by:
+            {{post.user.username}}
+            on
+            {{format_date post.createdAt}}</h4>
+        </div>
+      </div>
+    </a>
+  </div>
+{{/each}}
