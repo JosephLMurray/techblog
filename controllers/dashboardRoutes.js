@@ -1,18 +1,16 @@
 const router = require('express').Router();
 
-const { Post, Comment } = require('../models');
+const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', withAuth, async (req, res) => {
   // we want to go ahead and finishing the routing to get all the posts
   try {
     const postData = await Post.findAll({ include: Comment });
-    const post = postData({ plain: true });
-
-    res.render('posts', {
-      layout: 'dashboard.hbs',
-      ...post,
-      logged_in: req.session.logged_in
+    const posts = postData.map((post) => post.get({ plain: true }));
+    res.render('all-posts-admin', {
+      layout: 'dashboard',
+      posts
     });
   } catch (err) {
     res.render('login');
@@ -23,7 +21,7 @@ router.get('/new', withAuth, (req, res) => {
   // for showing new posts to the user
   try {
     res.render('new-posts', {
-      layout: 'dashboard.hbs',
+      layout: 'dashboard',
       logged_in: req.session.logged_in
     });
   } catch (err) {
@@ -31,23 +29,31 @@ router.get('/new', withAuth, (req, res) => {
   }
 });
 
-router.get('/edit/:id', withAuth, async (res, req) => {
+router.get('/edit/:id', withAuth, async (req, res) => {
   // To be able to find posts by primary key and render the edit post on the dashboard
   try {
-    const postData = await Post.findByPk({
-      where: {
-        id: req.params.id
-      }
+    const postData = await Post.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ['username']
+        },
+        {
+          model: Comment,
+          attributes: ['content']
+        }
+      ]
     });
-    const post = postData({ plain: true });
+
+    const post = postData.get({ plain: true });
 
     res.render('edit-posts', {
-      layout: 'dashboard.hbs',
-      ...post,
+      layout: 'dashboard',
+      post,
       logged_in: req.session.logged_in
     });
   } catch (err) {
-    res.render('login');
+    console.log(null);
   }
 });
 
