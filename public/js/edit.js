@@ -1,11 +1,11 @@
-const postId = document.querySelector('input[name="post-id"]').value;
+const postId = window.location.pathname.split('/').at(-1);
 
 // eslint-disable-next-line func-style
 const editFormHandler = async function (event) {
   event.preventDefault();
 
-  const title = document.querySelector('input[name="post-title"]').value;
-  const content = document.querySelector('textarea[name="post-content"]').value;
+  const title = document.querySelector('#post-title').value;
+  const content = document.querySelector('#post-content').value;
 
   await fetch(`/api/post/${postId}`, {
     // Create the functionality to help create the buttons for your website.
@@ -18,7 +18,6 @@ const editFormHandler = async function (event) {
 };
 
 const deleteClickHandler = async function () {
-  console.log('WEEEEEEE');
   await fetch(`/api/post/${postId}`, {
     method: 'DELETE'
   });

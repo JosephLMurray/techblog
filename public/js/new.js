@@ -2,8 +2,8 @@
 const newFormHandler = async function (event) {
   event.preventDefault();
 
-  const title = document.querySelector('input[name="post-title"]').value;
-  const content = document.querySelector('textarea[name="post-content"]').value;
+  const title = document.querySelector('#post-title').value;
+  const content = document.querySelector('#post-content').value;
 
   await fetch(`/api/post`, {
     // Create the functionality to help create the buttons for your website.
