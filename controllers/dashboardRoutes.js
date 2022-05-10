@@ -7,14 +7,28 @@ router.get('/', withAuth, async (req, res) => {
   // we want to go ahead and finishing the routing to get all the posts
   try {
     const postData = await Post.findAll({ include: Comment });
-    res.status(200).json(postData);
+    const post = postData({ plain: true });
+
+    res.render('posts', {
+      layout: 'dashboard.hbs',
+      ...post,
+      logged_in: req.session.logged_in
+    });
   } catch (err) {
-    res.json(err);
+    res.render('login');
   }
 });
 
 router.get('/new', withAuth, (req, res) => {
   // for showing new posts to the user
+  try {
+    res.render('new-posts', {
+      layout: 'dashboard.hbs',
+      logged_in: req.session.logged_in
+    });
+  } catch (err) {
+    res.render('login');
+  }
 });
 
 router.get('/edit/:id', withAuth, async (res, req) => {
@@ -27,7 +41,8 @@ router.get('/edit/:id', withAuth, async (res, req) => {
     });
     const post = postData({ plain: true });
 
-    res.render('post', {
+    res.render('edit-posts', {
+      layout: 'dashboard.hbs',
       ...post,
       logged_in: req.session.logged_in
     });
