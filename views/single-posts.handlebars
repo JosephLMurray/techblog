@@ -1,7 +1,16 @@
 <div class='row'>
   <div class='col-md-10 card'>
     <div class='card-header'>
-      <h2>{{post.title}}</h2>
+      <div class="row">
+        <div class="col-md-9">
+         <h2>{{post.title}}</h2>
+        </div>
+        {{#if logged_in}}
+        <div class="col-md-3">
+          <a class="btn btn-primary btn-inline" href="/dashboard/edit/{{post.id}}">Edit</a>
+        </div>
+        {{/if}}
+      </div>
     </div>
     <div class='card-body'>
       <h3>{{post.content}}</h3>
@@ -28,3 +37,25 @@
     </div>
   </div>
 {{/each}}
+{{#if logged_in}}
+<div class='row'>
+  <div class='col-md-10'>
+    <h2>Add Comment</h2>
+
+    <form class='form' id='new-comment-form'>
+      <div class='form-group'>
+        <div id="post-id" data-value="{{post.id}}"></div>
+      <div class='form-group'>
+        <label for='comment-content'>Content:</label>
+        <input
+          class='form-input'
+          type='textarea'
+          id='comment-content'
+        />
+      </div>
+      <div class='form-group'>
+        <button class='btn btn-primary' type='submit'>Submit</button>
+      </div>
+    </form>
+    <script src="../js/comment.js"></script>
+{{/if}}
